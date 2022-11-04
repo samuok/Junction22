@@ -1,6 +1,9 @@
 import mariadb
 import pandas
 import sys
+from PyQt5.QtWidgets import *
+from PyQt5.uic import loadUi
+from PyQt5.QtCore import Qt
 
 import sqlalchemy
 from sqlalchemy import create_engine
@@ -15,39 +18,62 @@ def connect():
             host="localhost",
             port=3306,
             database="junction"
-
         )
-
         print('Success')
+
     except mariadb.Error as e:
         print(f"Error connecting to MariaDB Platform: {e}")
         sys.exit(1)
 
-    # Get Cursor
+        # Get Cursor
+
     cur = conn.cursor()
 
     # cur.execute(
     #   "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
     #  (4, 5, 8, 1, 5))
 
-    #cur.execute("SELECT * FROM junction")
+    # cur.execute("SELECT * FROM junction")
 
     engine = sqlalchemy.create_engine("mariadb+mariadbconnector://kayttis:salis@127.0.0.1:3306/junction")
 
-
     df = pandas.read_sql("SELECT * FROM junction", engine)
-    #conn.commit()
+    # conn.commit()
 
     print(df)
 
+    # print(q)
 
+class Ui(QMainWindow):
+    def __init__(self):
+        QMainWindow.__init__(self)
+        loadUi("mainscreen.ui",self)
+        self.Answer1.valueChanged.connect(self.setValue1)
+        self.Answer2.valueChanged.connect(self.setValue2)
+        self.Answer3.valueChanged.connect(self.setValue3)
+        self.Answer4.valueChanged.connect(self.setValue4)
+        self.Submit.clicked.connect(self.loadtoDataBase)
 
-    #print(q)
+    def setValue1(self, item):
+        self.Value1.setText(str(item))
 
+    def setValue2(self, item):
+        self.Value2.setText(str(item))
 
+    def setValue3(self, item):
+        self.Value3.setText(str(item))
+
+    def setValue4(self, item):
+        self.Value4.setText(str(item))
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     connect()
+    def loadtoDataBase(self):
+        print("hello")
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+app = QApplication([])
+window = Ui()
+window.show()
+app.exec_()
+
