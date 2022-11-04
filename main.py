@@ -1,4 +1,5 @@
 import mariadb
+import numpy
 import pandas
 import sys
 from PyQt5.QtWidgets import *
@@ -66,11 +67,12 @@ class Ui(QMainWindow):
     def setValue4(self, item):
         self.Value4.setText(str(item))
 
+    def loadtoDataBase(self):
+        print("hello")
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     connect()
-    def loadtoDataBase(self):
-        print("hello")
 
 app = QApplication([])
 window = Ui()
