@@ -1,5 +1,4 @@
 import mariadb
-import numpy
 import pandas
 import sys
 from PyQt5.QtWidgets import *
@@ -68,12 +67,39 @@ class Ui(QMainWindow):
         self.Value4.setText(str(item))
 
     def loadtoDataBase(self):
-        print("hello")
+        try:
+            conn = mariadb.connect(
+                user="kayttis",
+                password="salis",
+                host="localhost",
+                port=3306,
+                database="junction"
+            )
+            print('Success')
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    connect()
+        except mariadb.Error as e:
+            print(f"Error connecting to MariaDB Platform: {e}")
+            sys.exit(1)
 
+            # Get Cursor
+
+        cur = conn.cursor()
+
+        #cur.execute(
+         #  "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
+         # (int(self.Value1.text()), int(self.Value2.text()), int(self.Value1.text()), int(self.Value5.text()), 5))
+
+        cur.execute(
+            "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
+            (1, 2, 3, 4, 5))
+
+        print(int(self.Value1.text()))
+        conn.commit()
+
+
+
+
+connect()
 app = QApplication([])
 window = Ui()
 window.show()
