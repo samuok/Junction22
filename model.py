@@ -24,5 +24,3 @@ X_test, X_validation, y_test, y_validation = train_test_split(X_hold, y_hold, te
 #Here we format the X and y data so we can try and find the optimal weights for our training.
 X_grid = np.concatenate((X_train, X_test))
 y_grid = np.concatenate((y_train, y_test))
-
-regularization_terms = np.linspace(0.0001, 5, 20)

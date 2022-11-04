@@ -91,7 +91,7 @@ class Ui(QMainWindow):
 
         cur.execute(
             "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
-            (1, 2, 3, 4, 5))
+            (int(self.Value1.text()), int(self.Value2.text()), int(self.Value3.text()), int(self.Value4.text()), int(self.Value4.text())))
 
         print(int(self.Value1.text()))
         conn.commit()
