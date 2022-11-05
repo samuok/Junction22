@@ -20,7 +20,7 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
 class SubWindow(QWidget):
     def __init__(self):
         QWidget.__init__(self)
-        loadUi(r"C:\Users\jussi\PycharmProjects\Junction22\config.ui", self)
+        loadUi("config.ui", self)
         self.conn = 0
         self.cur = 0
         self.connect_to_dataBase()
@@ -72,7 +72,7 @@ class SubWindow(QWidget):
             self.statusBar.setText("Error: No Split")
 
     def load_current_model(self):
-        self.model = self.ml.load_model(r"C:\Users\jussi\PycharmProjects\Junction22\finalized_model.sav")
+        self.model = self.ml.load_model("finalized_model.sav")
         self.statusBar.setText("Model loaded")
         self.trained = True
 
@@ -157,7 +157,7 @@ class Ui(QMainWindow):
         self.connect_to_dataBase()
         self.subWindow = 0
         QMainWindow.__init__(self)
-        loadUi(r"C:\Users\jussi\PycharmProjects\Junction22\mainscreen.ui",self)
+        loadUi("mainscreen.ui",self)
         self.Answer1.valueChanged.connect(self.setValue1)
         self.Answer2.valueChanged.connect(self.setValue2)
         self.Answer3.valueChanged.connect(self.setValue3)
@@ -219,7 +219,7 @@ class Ui(QMainWindow):
 
     def predict(self):
         ml = Machinelearning()
-        loaded_model = ml.load_model(r"C:\Users\jussi\PycharmProjects\Junction22\finalized_model.sav")
+        loaded_model = ml.load_model("finalized_model.sav")
         x_new = [[int(self.Value1.text()), int(self.Value2.text()), int(self.Value3.text()), int(self.Value4.text()), int(self.Value4.text()),
                   int(self.Value5.text()), int(self.Value6.text()), int(self.Value7.text()), int(self.Value8.text())]]
         prediction = loaded_model.predict(x_new)
