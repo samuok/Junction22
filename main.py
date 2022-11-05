@@ -32,6 +32,7 @@ class SubWindow(QWidget):
         self.load_data.clicked.connect(self.load_current_model)
         self.save_data.clicked.connect(self.save_current_model)
         self.predict.clicked.connect(self.predict_accuracy)
+        self.clear_data.clicked.connect(self.delete_data)
         self.data = self.get_data()
         self.add_data.clicked.connect(self.make_data)
         self.x_train = 0
@@ -88,6 +89,13 @@ class SubWindow(QWidget):
             # Get Cursor
 
         self.cur = self.conn.cursor()
+
+
+    def delete_data(self):
+        self.cur.execute(
+            "DELETE FROM junction")
+
+        self.conn.commit()
 
     def make_data(self):
 
