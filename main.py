@@ -1,5 +1,5 @@
 import mariadb
-import pandas
+import pandas as pd
 import sys
 import random
 import numpy as n
@@ -12,6 +12,7 @@ from sqlalchemy import create_engine
 from model import Machinelearning
 from scipy.stats import truncnorm
 
+
 def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
     return truncnorm(
         (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
@@ -19,32 +20,72 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
 
 class SubWindow(QWidget):
     def __init__(self):
-        QMainWindow.__init__(self)
+        QWidget.__init__(self)
         loadUi("config.ui", self)
+        self.conn = 0
+        self.cur = 0
+        self.connect_to_dataBase()
         self.model = 0
         self.ml = Machinelearning()
         self.train_model.clicked.connect(self.train)
-        self.x = 0
-        self.y = 0
-        self.data = self.load_data()
+        self.split.clicked.connect(self.define_set)
+        self.load_data.clicked.connect(self.load_current_model)
+        self.save_data.clicked.connect(self.save_current_model)
+        self.predict.clicked.connect(self.predict_accuracy)
+        self.data = self.get_data()
+        self.x_train = 0
+        self.y_train = 0
+        self.x_validation = 0
+        self.y_validation = 0
+        self.x_test = 0
+        self.y_test = 0
 
-    def load_data(self):
+    def get_data(self):
         engine = sqlalchemy.create_engine("mariadb+mariadbconnector://kayttis:salis@127.0.0.1:3306/junction")
-        data = pandas.read_sql("SELECT * FROM junction", engine)
-        return data
+        df = pd.read_sql("SELECT * FROM junction", engine)
+        return df
 
-    def define_set(self, split):
-        self.x, self.y = self.ml.split_database(self.data, "terapeutti")
-        self.ml.data_split(self.x, self.y)
+    def define_set(self):
+        x, y = self.ml.split_database(self.data, "terapeutti")
+        self.x_train, self.y_train, self.x_validation, self.y_validation, self.x_test , self.y_test = self.ml.data_split(x, y, float(self.split_val.toPlainText()))
 
     def train(self):
-        self.model = ml.train_model()
+        self.model = self.ml.train_model(self.x_train, self.y_train)
 
     def load_current_model(self):
         self.model = self.ml.load_model("finalized_model.sav")
 
     def save_current_model(self):
         self.ml.save_model(self.model)
+
+    def predict_accuracy(self):
+        val = self.ml.predict_model(self.model, self.x_validation, self.y_validation)
+        test = self.ml.predict_model(self.model, self.x_validation, self.y_validation)
+        self.val_error.setText("Validation error: "+ str(val[0]))
+        self.val_acc.setText("Validation accuracy: "+ str(val[1]))
+        self.val_f1 .setText("Validation f1 score: "+ str(val[2]))
+        self.test_error.setText("Test error: " + str(test[0]))
+        self.test_acc.setText("Test accuracy: " + str(test[1]))
+        self.test_f1.setText("Test f1 score: " + str(test[2]))
+        return 1
+    def connect_to_dataBase(self):
+        try:
+            self.conn = mariadb.connect(
+                user="kayttis",
+                password="salis",
+                host="localhost",
+                port=3306,
+                database="junction"
+            )
+            print('Success')
+
+        except mariadb.Error as e:
+            print(f"Error connecting to MariaDB Platform: {e}")
+            sys.exit(1)
+
+            # Get Cursor
+
+        self.cur = self.conn.cursor()
 
 
 
@@ -115,7 +156,7 @@ class Ui(QMainWindow):
 
         self.cur = self.conn.cursor()
 
-    def predict(self, model):
+    def predict(self):
         ml = Machinelearning()
         loaded_model = ml.load_model("finalized_model.sav")
         x_new = [[int(self.Value1.text()), int(self.Value2.text()), int(self.Value3.text()), int(self.Value4.text()), int(self.Value4.text()),
@@ -131,7 +172,7 @@ class Ui(QMainWindow):
 
     def get_data(self):
         engine = sqlalchemy.create_engine("mariadb+mariadbconnector://kayttis:salis@127.0.0.1:3306/junction")
-        df = pandas.read_sql("SELECT * FROM junction", engine)
+        df = pd.read_sql("SELECT * FROM junction", engine)
         return df
 
     def make_data(self):
@@ -165,7 +206,7 @@ app = QApplication([])
 window = Ui()
 window.show()
 app.exec_()
-#window.make_data()
+window.make_data()
 df = window.get_data()
 
 
