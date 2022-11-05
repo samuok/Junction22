@@ -48,25 +48,25 @@ class Machinelearning:
         return grid.best_params_
 
 
-    def train_model(self, X_train, y_train, C=1, gamma=0.0001, iterations=1000 , random=0):
+    def train_model(self, X_train, y_train, C=1, gamma=0.0001, iterations=100000 , random=0):
         SVC_method = SVC(C=C, gamma=0.0001, max_iter=iterations, random_state=random)
         SVC_ml = SVC_method.fit(X_train, y_train)
-        training_predict_SVC = SVC_ml.predict(X_train)
-        training_predict_SVC_binary = pd.get_dummies(SVC_ml.predict(X_train))
-        print(training_predict_SVC_binary)
-        training_error_SVC = hinge_loss(y_train, training_predict_SVC_binary)
-        print(training_error_SVC)
+        #training_predict_SVC = SVC_ml.predict(X_train)
+        #training_predict_SVC_binary = pd.get_dummies(SVC_ml.predict(X_train))
+        #print(training_predict_SVC_binary)
+        #training_error_SVC = hinge_loss(y_train, training_predict_SVC_binary)
+        #print(training_error_SVC)
 
         return SVC_ml
 
     def predict_model(self, model, x, y, dataName = ""):
         predict_SVC  = model.predict(x)
-        predict_SVC_binary =  pd.get_dummies(model.predict(x))
+        #predict_SVC_binary =  pd.get_dummies(model.predict(x))
 
-        error_SVC = hinge_loss(y, predict_SVC_binary)
+        #error_SVC = hinge_loss(y, predict_SVC_binary)
         accuracy_SVC = accuracy_score(y, predict_SVC)
         f1_score_SVC = f1_score(y, predict_SVC, average='weighted')
-        print(dataName + " error SVC",error_SVC)
+        #print(dataName + " error SVC",error_SVC)
         print(dataName + " accuracy SVC", accuracy_SVC)
         print(dataName + " f1_score SVC", f1_score_SVC)
 

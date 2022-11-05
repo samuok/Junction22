@@ -91,7 +91,13 @@ class Ui(QMainWindow):
          #  "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
          # (int(self.Value1.text()), int(self.Value2.text()), int(self.Value1.text()), int(self.Value5.text()), 5))
 
-        weighted_random = [1] * 10 + [2] * 10 + [3] * 10 + [4] * 5 + [5] * 10 + [6] * 20 + [7] * 10 + [8] * 10 + [9] * 5 + [10] * 10
+        therapist = random.randint(0,2)
+        if therapist == 0:
+            weighted_random = [1] * 10 + [2] * 10 + [3] * 10 + [4] * 5 + [5] * 10 + [6] * 20 + [7] * 10 + [8] * 10 + [9] * 5 + [10] * 10
+        if therapist == 1:
+            weighted_random = [1] * 10 + [2] * 10 + [3] * 10 + [4] * 5 + [5] * 10 + [6] * 20 + [7] * 10 + [8] * 10 + [9] * 5 + [10] * 10
+        if therapist == 2:
+            weighted_random = [1] * 10 + [2] * 10 + [3] * 10 + [4] * 5 + [5] * 10 + [6] * 20 + [7] * 10 + [8] * 10 + [9] * 5 + [10] * 10
 
 
         for x in range(10000):
@@ -120,7 +126,7 @@ print(df.columns)
 ml = Machinelearning()
 X, y = ml.split_database(df, "arvo4")
 data = ml.data_split(X, y, 0.40)
-ml.find_parameters(data[0], data[1])
+#ml.find_parameters(data[0], data[1])
 model = ml.train_model(data[0], data[1])
 ml.predict_model(model, data[2], data[3], "Validation")
 ml.predict_model(model, data[4], data[5], "Test")
