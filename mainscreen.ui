@@ -409,9 +409,9 @@
    <widget class="QLabel" name="title">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>100</x>
       <y>10</y>
-      <width>211</width>
+      <width>331</width>
       <height>41</height>
      </rect>
     </property>
@@ -422,7 +422,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Project</string>
+     <string>Therapist Assigner</string>
     </property>
    </widget>
    <widget class="QLabel" name="suggested">
@@ -430,12 +430,12 @@
      <rect>
       <x>30</x>
       <y>420</y>
-      <width>221</width>
+      <width>341</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Suggested Therapist: </string>
+     <string>The Most suitable therapist for your needs has the number: </string>
     </property>
    </widget>
    <widget class="QPushButton" name="config">
@@ -448,7 +448,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Config</string>
+     <string>Admin</string>
     </property>
     <property name="test2" stdset="0">
      <color>
