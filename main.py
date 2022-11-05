@@ -6,7 +6,6 @@ import numpy as n
 from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import Qt
-
 import sqlalchemy
 from sqlalchemy import create_engine
 from model import Machinelearning
@@ -28,6 +27,7 @@ class Ui(QMainWindow):
         self.Answer2.valueChanged.connect(self.setValue2)
         self.Answer3.valueChanged.connect(self.setValue3)
         self.Answer4.valueChanged.connect(self.setValue4)
+        self.Submit.clicked.connect(self.predict)
         self.Submit.clicked.connect(self.add_data)
 
     def setValue1(self, item):
@@ -61,6 +61,12 @@ class Ui(QMainWindow):
 
         self.cur = self.conn.cursor()
 
+    def predict(self, model):
+        ml = Machinelearning()
+        loaded_model = ml.load_model("finalized_model.sav")
+        x_new = [[int(self.Value1.text()), int(self.Value2.text()), int(self.Value3.text()), int(self.Value4.text()), int(self.Value4.text())]]
+        prediction = loaded_model.predict(x_new)
+        print("prediction", prediction)
     def add_data(self):
         self.cur.execute(
          "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
@@ -72,7 +78,7 @@ class Ui(QMainWindow):
         return df
 
     def make_data(self):
-        for x in range(10000):
+        for x in range(20000):
             therapist = random.randint(0, 4)
             weighted_random_1=0
             weighted_random_2=0
@@ -121,7 +127,7 @@ app = QApplication([])
 window = Ui()
 window.show()
 app.exec_()
-window.make_data()
+#window.make_data()
 df = window.get_data()
 
 
@@ -129,8 +135,11 @@ ml = Machinelearning()
 X, y = ml.split_database(df, "arvo4")
 data = ml.data_split(X, y, 0.40)
 #ml.find_parameters(data[0], data[1])
-model = ml.train_model(data[0], data[1])
-ml.predict_model(model, data[2], data[3], "Validation")
-ml.predict_model(model, data[4], data[5], "Test")
+#model = ml.train_model(data[0], data[1])
+#ml.save_model(model)
+new_model = ml.load_model("finalized_model.sav")
+
+ml.predict_model(new_model, data[2], data[3], "Validation")
+ml.predict_model(new_model, data[4], data[5], "Test")
 
 

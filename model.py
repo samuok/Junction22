@@ -4,7 +4,7 @@ from sklearn.metrics import f1_score, accuracy_score
 from sklearn.metrics import hinge_loss
 import numpy as np
 import pandas as pd
-
+import pickle
 
 class Machinelearning:
     def __init__(self):
@@ -17,6 +17,7 @@ class Machinelearning:
 
         # We physically split the data
         X_df = dataframe.drop(columns=y_columns)
+        print(X_df)
         Y_df = dataframe.drop(columns=X_columns)
 
         # We format the data so it can be used by the model
@@ -70,9 +71,13 @@ class Machinelearning:
         print(dataName + " accuracy SVC", accuracy_SVC)
         print(dataName + " f1_score SVC", f1_score_SVC)
 
+    def save_model(self, model):
+        filename = 'finalized_model.sav'
+        pickle.dump(model, open(filename, 'wb'))
 
-
-
+    def load_model(self, filename):
+        loaded_model = pickle.load(open(filename, 'rb'))
+        return loaded_model
 
 
 
