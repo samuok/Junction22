@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QPushButton" name="train_model">
+  <widget class="QPushButton" name="split">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -136,7 +136,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="train_model_2">
+  <widget class="QPushButton" name="train_model">
    <property name="geometry">
     <rect>
      <x>10</x>
