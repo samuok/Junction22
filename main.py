@@ -1,6 +1,8 @@
 import mariadb
 import pandas
 import sys
+import random
+import numpy as n
 from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import Qt
@@ -89,12 +91,18 @@ class Ui(QMainWindow):
          #  "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
          # (int(self.Value1.text()), int(self.Value2.text()), int(self.Value1.text()), int(self.Value5.text()), 5))
 
-        cur.execute(
-            "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
-            (1, 2, 3, 4, 5))
+        weighted_random = [1] * 10 + [2] * 10 + [3] * 10 + [4] * 5 + [5] * 10 + [6] * 20 + [7] * 10 + [8] * 10 + [9] * 5 + [10] * 10
+
+
+        for x in range(10000):
+            cur.execute(
+                "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
+                (random.choice(weighted_random), random.choice(weighted_random), random.choice(weighted_random),
+                 random.choice(weighted_random), random.choice(weighted_random)))
 
         print(int(self.Value1.text()))
         conn.commit()
+
 
 
 
