@@ -54,6 +54,11 @@ class Ui(QMainWindow):
         self.Answer2.valueChanged.connect(self.setValue2)
         self.Answer3.valueChanged.connect(self.setValue3)
         self.Answer4.valueChanged.connect(self.setValue4)
+        self.Answer5.valueChanged.connect(self.setValue5)
+        self.Answer6.valueChanged.connect(self.setValue6)
+        self.Answer7.valueChanged.connect(self.setValue7)
+        self.Answer8.valueChanged.connect(self.setValue8)
+
         self.Submit.clicked.connect(self.loadtoDataBase)
 
     def setValue1(self, item):
@@ -67,6 +72,18 @@ class Ui(QMainWindow):
 
     def setValue4(self, item):
         self.Value4.setText(str(item))
+
+    def setValue5(self, item):
+        self.Value5.setText(str(item))
+
+    def setValue6(self, item):
+        self.Value6.setText(str(item))
+
+    def setValue7(self, item):
+        self.Value7.setText(str(item))
+
+    def setValue8(self, item):
+        self.Value8.setText(str(item))
 
     def loadtoDataBase(self):
         try:
@@ -91,20 +108,32 @@ class Ui(QMainWindow):
          #  "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
          # (int(self.Value1.text()), int(self.Value2.text()), int(self.Value1.text()), int(self.Value5.text()), 5))
 
-        therapist = random.randint(0,2)
-        if therapist == 0:
-            weighted_random = [1] * 10 + [2] * 10 + [3] * 10 + [4] * 5 + [5] * 10 + [6] * 20 + [7] * 10 + [8] * 10 + [9] * 5 + [10] * 10
-        if therapist == 1:
-            weighted_random = [1] * 10 + [2] * 10 + [3] * 10 + [4] * 5 + [5] * 10 + [6] * 20 + [7] * 10 + [8] * 10 + [9] * 5 + [10] * 10
-        if therapist == 2:
-            weighted_random = [1] * 10 + [2] * 10 + [3] * 10 + [4] * 5 + [5] * 10 + [6] * 20 + [7] * 10 + [8] * 10 + [9] * 5 + [10] * 10
-
 
         for x in range(10000):
+
+            print(n.random.normal(5, 1, 1))
+            therapist = random.randint(0, 4)
+            if therapist == 0:
+                n.random.normal(5, 1, 1)
+                weighted_random = [1] * 1 + [2] * 2 + [3] * 1 + [4] * 1 + [5] * 1 + [6] * 1 + [7] * 1 + [8] * 1 + [
+                    9] * 1 + [10] * 90
+            if therapist == 1:
+                weighted_random = [1] * 2 + [2] * 1 + [3] * 1 + [4] * 1 + [5] * 90 + [6] * 1 + [7] * 1 + [8] * 1 + [
+                    9] * 1 + [10] * 1
+            if therapist == 2:
+                weighted_random = [1] * 90 + [2] * 1 + [3] * 1 + [4] * 1 + [5] * 1 + [6] * 1 + [7] * 1 + [8] * 1 + [
+                    9] * 1 + [10] * 2
+            if therapist == 3:
+                weighted_random = [1] * 1 + [2] * 1 + [3] * 1 + [4] * 1 + [5] * 1 + [6] * 1 + [7] * 1 + [8] * 1 + [
+                    9] * 90 + [10] * 2
+            if therapist == 4:
+                weighted_random = [1] * 1 + [2] * 1 + [3] * 90 + [4] * 1 + [5] * 1 + [6] * 1 + [7] * 1 + [8] * 1 + [
+                    9] * 1 + [10] * 2
+
             cur.execute(
                 "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
                 (random.choice(weighted_random), random.choice(weighted_random), random.choice(weighted_random),
-                 random.choice(weighted_random), random.choice(weighted_random)))
+                 random.choice(weighted_random), therapist))
        # cur.execute(
         #    "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
          #   (int(self.Value1.text()), int(self.Value2.text()), int(self.Value3.text()), int(self.Value4.text()), int(self.Value4.text())))
@@ -126,7 +155,7 @@ print(df.columns)
 ml = Machinelearning()
 X, y = ml.split_database(df, "arvo4")
 data = ml.data_split(X, y, 0.40)
-ml.find_parameters(data[0], data[1])
+#ml.find_parameters(data[0], data[1])
 model = ml.train_model(data[0], data[1])
 ml.predict_model(model, data[2], data[3], "Validation")
 ml.predict_model(model, data[4], data[5], "Test")
