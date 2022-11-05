@@ -10,7 +10,7 @@ class Machinelearning:
     def __init__(self):
         self.answer = 1
 
-    def split_database(self, dataframe, label ):
+    def split_database(self, dataframe, label):
         # We define the labels and features of the dataset and split them accordingly
         X_columns = list(filter(lambda x: x != label, dataframe.columns))
         y_columns = [label]

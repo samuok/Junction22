@@ -21,6 +21,32 @@ class SubWindow(QWidget):
     def __init__(self):
         QMainWindow.__init__(self)
         loadUi("config.ui", self)
+        self.model = 0
+        self.ml = Machinelearning()
+        self.train_model.clicked.connect(self.train)
+        self.x = 0
+        self.y = 0
+        self.data = self.load_data()
+
+    def load_data(self):
+        engine = sqlalchemy.create_engine("mariadb+mariadbconnector://kayttis:salis@127.0.0.1:3306/junction")
+        data = pandas.read_sql("SELECT * FROM junction", engine)
+        return data
+
+    def define_set(self, split):
+        self.x, self.y = self.ml.split_database(self.data, "terapeutti")
+        self.ml.data_split(self.x, self.y)
+
+    def train(self):
+        self.model = ml.train_model()
+
+    def load_current_model(self):
+        self.model = self.ml.load_model("finalized_model.sav")
+
+    def save_current_model(self):
+        self.ml.save_model(self.model)
+
+
 
 class Ui(QMainWindow):
     def __init__(self):
