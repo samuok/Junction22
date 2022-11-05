@@ -62,12 +62,13 @@ class SubWindow(QWidget):
     def predict_accuracy(self):
         val = self.ml.predict_model(self.model, self.x_validation, self.y_validation)
         test = self.ml.predict_model(self.model, self.x_validation, self.y_validation)
-        self.val_error.setText("Validation error: "+ str(val[0]))
-        self.val_acc.setText("Validation accuracy: "+ str(val[1]))
-        self.val_f1 .setText("Validation f1 score: "+ str(val[2]))
-        self.test_error.setText("Test error: " + str(test[0]))
-        self.test_acc.setText("Test accuracy: " + str(test[1]))
-        self.test_f1.setText("Test f1 score: " + str(test[2]))
+
+        self.val_error.setText("Validation error: "+ str(round(val[0] * 100, 2)) + "%")
+        self.val_acc.setText("Validation accuracy: "+ str(round(val[1] * 100, 2)) + "%")
+        self.val_f1 .setText("Validation f1 score: "+ str(round(val[2] * 100, 2)) + "%")
+        self.test_error.setText("Test error: " + str(round(test[0] * 100, 2)) + "%")
+        self.test_acc.setText("Test accuracy: " + str(round(test[1] * 100, 2)) + "%")
+        self.test_f1.setText("Test f1 score: " + str(round(test[2] * 100, 2)) + "%")
 
     def connect_to_dataBase(self):
         try:
