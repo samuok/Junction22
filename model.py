@@ -65,7 +65,7 @@ class Machinelearning:
         return error_SVC, accuracy_SVC, f1_score_SVC
 
     def save_model(self, model):
-        filename = 'finalized_model.sav'
+        filename = r'C:\Users\jussi\PycharmProjects\Junction22\finalized_model.sav'
         pickle.dump(model, open(filename, 'wb'))
 
     def load_model(self, filename):
