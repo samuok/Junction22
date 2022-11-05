@@ -92,9 +92,7 @@ class SubWindow(QWidget):
 
 
     def delete_data(self):
-        self.cur.execute(
-            "DELETE FROM junction")
-
+        self.cur.execute("TRUNCATE TABLE junction")
         self.conn.commit()
 
     def make_data(self):
