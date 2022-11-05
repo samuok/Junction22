@@ -48,10 +48,10 @@ class Machinelearning:
         return grid.best_params_
 
 
-    def train_model(self, X_train, y_train, C=1, gamma=0.0001, iterations=100000 , random=0):
-        SVC_method = SVC(C=C, gamma=0.0001, max_iter=iterations, random_state=random)
+    def train_model(self, X_train, y_train, C=4.2, gamma=0.01, iterations=100000 , random=0):
+        SVC_method = SVC(C=C, gamma=gamma, max_iter=iterations)
         SVC_ml = SVC_method.fit(X_train, y_train)
-        #training_predict_SVC = SVC_ml.predict(X_train)
+        training_predict_SVC = SVC_ml.predict(X_train)
         #training_predict_SVC_binary = pd.get_dummies(SVC_ml.predict(X_train))
         #print(training_predict_SVC_binary)
         #training_error_SVC = hinge_loss(y_train, training_predict_SVC_binary)
