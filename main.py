@@ -7,6 +7,7 @@ from PyQt5.QtCore import Qt
 
 import sqlalchemy
 from sqlalchemy import create_engine
+from model import Machinelearning
 
 
 def connect():
