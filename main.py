@@ -33,6 +33,7 @@ class SubWindow(QWidget):
         self.save_data.clicked.connect(self.save_current_model)
         self.predict.clicked.connect(self.predict_accuracy)
         self.data = self.get_data()
+        self.add_data.clicked.connect(self.make_data)
         self.x_train = 0
         self.y_train = 0
         self.x_validation = 0
@@ -67,7 +68,7 @@ class SubWindow(QWidget):
         self.test_error.setText("Test error: " + str(test[0]))
         self.test_acc.setText("Test accuracy: " + str(test[1]))
         self.test_f1.setText("Test f1 score: " + str(test[2]))
-        return 1
+
     def connect_to_dataBase(self):
         try:
             self.conn = mariadb.connect(
@@ -86,6 +87,31 @@ class SubWindow(QWidget):
             # Get Cursor
 
         self.cur = self.conn.cursor()
+
+    def make_data(self):
+
+        therapists = [[2,7,4,1,9,5,4,2], [8,2,4,7,2,2,4,2], [4,4,1,1,7, 8, 1,8], [4,1,1,5,8,3,8,3],
+                      [9,8,4,7,2,4,3,8], [4,1,9,9,9,6,2,3], [2,3,2,5,2,7,5,5], [9,2,7,4,5,2,7,4]]
+        for x in range(int(self.add_val.toPlainText())):
+            therapist = random.randint(0, 7)
+
+            val = therapists[therapist]
+            weighted_random_1 = int(get_truncated_normal(val[0], 1, 0, 10).rvs(1))
+            weighted_random_2 = int(get_truncated_normal(val[1], 1, 0, 10).rvs(1))
+            weighted_random_3 = int(get_truncated_normal(val[2], 1, 0, 10).rvs(1))
+            weighted_random_4 = int(get_truncated_normal(val[3], 1, 0, 10).rvs(1))
+            weighted_random_5 = int(get_truncated_normal(val[4], 1, 0, 10).rvs(1))
+            weighted_random_6 = int(get_truncated_normal(val[5], 1, 0, 10).rvs(1))
+            weighted_random_7 = int(get_truncated_normal(val[6], 1, 0, 10).rvs(1))
+            weighted_random_8 = int(get_truncated_normal(val[7], 1, 0, 10).rvs(1))
+
+            self.cur.execute(
+                "INSERT INTO junction (arvo1, arvo2, arvo3, arvo4, arvo5, arvo6, arvo7, arvo8, terapeutti) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (weighted_random_1, weighted_random_2, weighted_random_3, weighted_random_4, weighted_random_5,
+                 weighted_random_6, weighted_random_7, weighted_random_8, therapist))
+
+        self.conn.commit()
+        self.data = self.get_data()
 
 
 
@@ -175,29 +201,6 @@ class Ui(QMainWindow):
         df = pd.read_sql("SELECT * FROM junction", engine)
         return df
 
-    def make_data(self):
-
-        therapists = [[2,7,4,1,9,5,4,2], [8,2,4,7,2,2,4,2], [4,4,1,1,7, 8, 1,8], [4,1,1,5,8,3,8,3],
-                      [9,8,4,7,2,4,3,8], [4,1,9,9,9,6,2,3], [2,3,2,5,2,7,5,5], [9,2,7,4,5,2,7,4]]
-        for x in range(5000):
-            therapist = random.randint(0, 7)
-
-            val = therapists[therapist]
-            weighted_random_1 = int(get_truncated_normal(val[0], 1, 0, 10).rvs(1))
-            weighted_random_2 = int(get_truncated_normal(val[1], 1, 0, 10).rvs(1))
-            weighted_random_3 = int(get_truncated_normal(val[2], 1, 0, 10).rvs(1))
-            weighted_random_4 = int(get_truncated_normal(val[3], 1, 0, 10).rvs(1))
-            weighted_random_5 = int(get_truncated_normal(val[4], 1, 0, 10).rvs(1))
-            weighted_random_6 = int(get_truncated_normal(val[5], 1, 0, 10).rvs(1))
-            weighted_random_7 = int(get_truncated_normal(val[6], 1, 0, 10).rvs(1))
-            weighted_random_8 = int(get_truncated_normal(val[7], 1, 0, 10).rvs(1))
-
-            self.cur.execute(
-                "INSERT INTO junction (arvo1, arvo2, arvo3, arvo4, arvo5, arvo6, arvo7, arvo8, terapeutti) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                (weighted_random_1, weighted_random_2, weighted_random_3, weighted_random_4, weighted_random_5,
-                 weighted_random_6, weighted_random_7, weighted_random_8, therapist))
-
-        self.conn.commit()
 
 
 
@@ -206,19 +209,8 @@ app = QApplication([])
 window = Ui()
 window.show()
 app.exec_()
-window.make_data()
-df = window.get_data()
 
 
-ml = Machinelearning()
-X, y = ml.split_database(df, "terapeutti")
-data = ml.data_split(X, y, 0.40)
-#ml.find_parameters(data[0], data[1])
-model = ml.train_model(data[0], data[1])
-ml.save_model(model)
-new_model = ml.load_model("finalized_model.sav")
 
-ml.predict_model(new_model, data[2], data[3], "Validation")
-ml.predict_model(new_model, data[4], data[5], "Test")
 
 
