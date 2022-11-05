@@ -9,6 +9,7 @@ from PyQt5.QtCore import Qt
 
 import sqlalchemy
 from sqlalchemy import create_engine
+from model import Machinelearning
 
 
 def connect():
@@ -43,8 +44,7 @@ def connect():
     # conn.commit()
 
     print(df)
-
-    # print(q)
+    return df
 
 class Ui(QMainWindow):
     def __init__(self):
@@ -99,10 +99,12 @@ class Ui(QMainWindow):
                 "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
                 (random.choice(weighted_random), random.choice(weighted_random), random.choice(weighted_random),
                  random.choice(weighted_random), random.choice(weighted_random)))
+       # cur.execute(
+        #    "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
+         #   (int(self.Value1.text()), int(self.Value2.text()), int(self.Value3.text()), int(self.Value4.text()), int(self.Value4.text())))
 
         print(int(self.Value1.text()))
         conn.commit()
-
 
 
 
@@ -112,4 +114,15 @@ app = QApplication([])
 window = Ui()
 window.show()
 app.exec_()
+
+df = connect()
+print(df.columns)
+ml = Machinelearning()
+X, y = ml.split_database(df, "arvo4")
+data = ml.data_split(X, y, 0.40)
+ml.find_parameters(data[0], data[1])
+model = ml.train_model(data[0], data[1])
+ml.predict_model(model, data[2], data[3], "Validation")
+ml.predict_model(model, data[4], data[5], "Test")
+
 
