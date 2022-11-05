@@ -10,51 +10,25 @@ from PyQt5.QtCore import Qt
 import sqlalchemy
 from sqlalchemy import create_engine
 from model import Machinelearning
+from scipy.stats import truncnorm
 
+def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
+    return truncnorm(
+        (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
-def connect():
-    # Connect to MariaDB Platform
-    try:
-        conn = mariadb.connect(
-            user="kayttis",
-            password="salis",
-            host="localhost",
-            port=3306,
-            database="junction"
-        )
-        print('Success')
-
-    except mariadb.Error as e:
-        print(f"Error connecting to MariaDB Platform: {e}")
-        sys.exit(1)
-
-        # Get Cursor
-
-    cur = conn.cursor()
-
-    # cur.execute(
-    #   "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
-    #  (4, 5, 8, 1, 5))
-
-    # cur.execute("SELECT * FROM junction")
-
-    engine = sqlalchemy.create_engine("mariadb+mariadbconnector://kayttis:salis@127.0.0.1:3306/junction")
-
-    df = pandas.read_sql("SELECT * FROM junction", engine)
-    # conn.commit()
-
-    print(df)
-    return df
 
 class Ui(QMainWindow):
     def __init__(self):
+        self.conn = 0
+        self.cur = 0
+        self.connect_to_dataBase()
         QMainWindow.__init__(self)
         loadUi("mainscreen.ui",self)
         self.Answer1.valueChanged.connect(self.setValue1)
         self.Answer2.valueChanged.connect(self.setValue2)
         self.Answer3.valueChanged.connect(self.setValue3)
         self.Answer4.valueChanged.connect(self.setValue4)
-        self.Submit.clicked.connect(self.loadtoDataBase)
+        self.Submit.clicked.connect(self.add_data)
 
     def setValue1(self, item):
         self.Value1.setText(str(item))
@@ -68,9 +42,9 @@ class Ui(QMainWindow):
     def setValue4(self, item):
         self.Value4.setText(str(item))
 
-    def loadtoDataBase(self):
+    def connect_to_dataBase(self):
         try:
-            conn = mariadb.connect(
+            self.conn = mariadb.connect(
                 user="kayttis",
                 password="salis",
                 host="localhost",
@@ -85,44 +59,72 @@ class Ui(QMainWindow):
 
             # Get Cursor
 
-        cur = conn.cursor()
+        self.cur = self.conn.cursor()
 
-        #cur.execute(
-         #  "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
-         # (int(self.Value1.text()), int(self.Value2.text()), int(self.Value1.text()), int(self.Value5.text()), 5))
+    def add_data(self):
+        self.cur.execute(
+         "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
+         (int(self.Value1.text()), int(self.Value2.text()), int(self.Value3.text()), int(self.Value4.text()), 5))
 
-        therapist = random.randint(0,2)
-        if therapist == 0:
-            weighted_random = [1] * 10 + [2] * 10 + [3] * 10 + [4] * 5 + [5] * 10 + [6] * 20 + [7] * 10 + [8] * 10 + [9] * 5 + [10] * 10
-        if therapist == 1:
-            weighted_random = [1] * 10 + [2] * 10 + [3] * 10 + [4] * 5 + [5] * 10 + [6] * 20 + [7] * 10 + [8] * 10 + [9] * 5 + [10] * 10
-        if therapist == 2:
-            weighted_random = [1] * 10 + [2] * 10 + [3] * 10 + [4] * 5 + [5] * 10 + [6] * 20 + [7] * 10 + [8] * 10 + [9] * 5 + [10] * 10
+    def get_data(self):
+        engine = sqlalchemy.create_engine("mariadb+mariadbconnector://kayttis:salis@127.0.0.1:3306/junction")
+        df = pandas.read_sql("SELECT * FROM junction", engine)
+        return df
 
-
+    def make_data(self):
         for x in range(10000):
-            cur.execute(
+            therapist = random.randint(0, 4)
+            weighted_random_1=0
+            weighted_random_2=0
+            weighted_random_3=0
+            weighted_random_4=0
+
+            if therapist == 0:
+                weighted_random_1 = int(get_truncated_normal(2, 1, 0, 10).rvs(1))
+                weighted_random_2 = int(get_truncated_normal(7, 1, 0, 10).rvs(1))
+                weighted_random_3 = int(get_truncated_normal(4, 1, 0, 10).rvs(1))
+                weighted_random_4 = int(get_truncated_normal(1, 1, 0, 10).rvs(1))
+            if therapist == 1:
+                weighted_random_1 = int(get_truncated_normal(7, 1, 0, 10).rvs(1))
+                weighted_random_2 = int(get_truncated_normal(4, 1, 0, 10).rvs(1))
+                weighted_random_3 = int(get_truncated_normal(2, 1, 0, 10).rvs(1))
+                weighted_random_4 = int(get_truncated_normal(4, 1, 0, 10).rvs(1))
+
+            if therapist == 2:
+                weighted_random_1 = int(get_truncated_normal(5, 1, 0, 10).rvs(1))
+                weighted_random_2 = int(get_truncated_normal(9, 1, 0, 10).rvs(1))
+                weighted_random_3 = int(get_truncated_normal(4, 1, 0, 10).rvs(1))
+                weighted_random_4 = int(get_truncated_normal(2, 1, 0, 10).rvs(1))
+
+            if therapist == 3:
+                weighted_random_1 = int(get_truncated_normal(2, 1, 0, 10).rvs(1))
+                weighted_random_2 = int(get_truncated_normal(1, 1, 0, 10).rvs(1))
+                weighted_random_3 = int(get_truncated_normal(4, 1, 0, 10).rvs(1))
+                weighted_random_4 = int(get_truncated_normal(7, 1, 0, 10).rvs(1))
+            if therapist == 4:
+                weighted_random_1 = int(get_truncated_normal(9, 1, 0, 10).rvs(1))
+                weighted_random_2 = int(get_truncated_normal(2, 1, 0, 10).rvs(1))
+                weighted_random_3 = int(get_truncated_normal(4, 1, 0, 10).rvs(1))
+                weighted_random_4 = int(get_truncated_normal(3, 1, 0, 10).rvs(1))
+
+            self.cur.execute(
                 "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
-                (random.choice(weighted_random), random.choice(weighted_random), random.choice(weighted_random),
-                 random.choice(weighted_random), random.choice(weighted_random)))
-       # cur.execute(
-        #    "INSERT INTO junction (arvo,arvo1, arvo2, arvo3, arvo4) VALUES (?, ?, ?, ?, ?)",
-         #   (int(self.Value1.text()), int(self.Value2.text()), int(self.Value3.text()), int(self.Value4.text()), int(self.Value4.text())))
+                (weighted_random_1, weighted_random_2, weighted_random_3, weighted_random_4, therapist))
 
         print(int(self.Value1.text()))
-        conn.commit()
+        self.conn.commit()
 
 
 
 
-connect()
 app = QApplication([])
 window = Ui()
 window.show()
 app.exec_()
+window.make_data()
+df = window.get_data()
 
-df = connect()
-print(df.columns)
+
 ml = Machinelearning()
 X, y = ml.split_database(df, "arvo4")
 data = ml.data_split(X, y, 0.40)
