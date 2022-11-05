@@ -36,10 +36,6 @@ class Machinelearning:
 
     def find_parameters(self, X_train, y_train, random=0):
 
-        # Here we format the X and y data so we can try and find the optimal weights for our training.
-        #X_grid = np.concatenate((X_train, X_test))
-        #y_grid = np.concatenate((y_train, y_test))
-
         regularisation_terms = np.linspace(0.00001, 5, 20)
         parameters = {'gamma': [1, 0.1, 0.01, 0.001, 0.0001],'C': regularisation_terms}
         svc = SVC(random_state=random, kernel='rbf')
@@ -49,25 +45,25 @@ class Machinelearning:
         return grid.best_params_
 
 
-    def train_model(self, X_train, y_train, C=4.2, gamma=0.01, iterations=100000 , random=0):
+    def train_model(self, X_train, y_train, C=5, gamma=0.01, iterations=100000):
         SVC_method = SVC(C=C, gamma=gamma, max_iter=iterations)
         SVC_ml = SVC_method.fit(X_train, y_train)
         training_predict_SVC = SVC_ml.predict(X_train)
-        #training_predict_SVC_binary = pd.get_dummies(SVC_ml.predict(X_train))
-        #print(training_predict_SVC_binary)
-        #training_error_SVC = hinge_loss(y_train, training_predict_SVC_binary)
-        #print(training_error_SVC)
+        training_predict_SVC_binary = pd.get_dummies(SVC_ml.predict(X_train))
+        print(training_predict_SVC_binary)
+        training_error_SVC = hinge_loss(y_train, training_predict_SVC_binary)
+        print(training_error_SVC)
 
         return SVC_ml
 
     def predict_model(self, model, x, y, dataName = ""):
         predict_SVC  = model.predict(x)
-        #predict_SVC_binary =  pd.get_dummies(model.predict(x))
+        predict_SVC_binary =  pd.get_dummies(model.predict(x))
 
-        #error_SVC = hinge_loss(y, predict_SVC_binary)
+        error_SVC = hinge_loss(y, predict_SVC_binary)
         accuracy_SVC = accuracy_score(y, predict_SVC)
         f1_score_SVC = f1_score(y, predict_SVC, average='weighted')
-        #print(dataName + " error SVC",error_SVC)
+        print(dataName + " error SVC",error_SVC)
         print(dataName + " accuracy SVC", accuracy_SVC)
         print(dataName + " f1_score SVC", f1_score_SVC)
 

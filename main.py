@@ -17,11 +17,17 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
         (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
 
+class SubWindow(QWidget):
+    def __init__(self):
+        QMainWindow.__init__(self)
+        loadUi("config.ui", self)
+
 class Ui(QMainWindow):
     def __init__(self):
         self.conn = 0
         self.cur = 0
         self.connect_to_dataBase()
+        self.subWindow = 0
         QMainWindow.__init__(self)
         loadUi("mainscreen.ui",self)
         self.Answer1.valueChanged.connect(self.setValue1)
@@ -35,7 +41,11 @@ class Ui(QMainWindow):
 
         self.Submit.clicked.connect(self.predict)
         self.Submit.clicked.connect(self.add_data)
+        self.config.clicked.connect(self.open_window)
 
+    def open_window(self):
+        self.subWindow = SubWindow()
+        self.subWindow.show()
     def setValue1(self, item):
         self.Value1.setText(str(item))
 
@@ -82,9 +92,10 @@ class Ui(QMainWindow):
     def predict(self, model):
         ml = Machinelearning()
         loaded_model = ml.load_model("finalized_model.sav")
-        x_new = [[int(self.Value1.text()), int(self.Value2.text()), int(self.Value3.text()), int(self.Value4.text()), int(self.Value4.text())]]
+        x_new = [[int(self.Value1.text()), int(self.Value2.text()), int(self.Value3.text()), int(self.Value4.text()), int(self.Value4.text()),
+                  int(self.Value5.text()), int(self.Value6.text()), int(self.Value7.text()), int(self.Value8.text())]]
         prediction = loaded_model.predict(x_new)
-        print("prediction", prediction)
+        self.suggested.setText("Suggested Therapist: "+ str(prediction[0]))
     def add_data(self):
         self.cur.execute(
             "INSERT INTO junction (arvo1, arvo2, arvo3, arvo4, arvo5, arvo6, arvo7, arvo8, terapeutti) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -98,71 +109,27 @@ class Ui(QMainWindow):
         return df
 
     def make_data(self):
+
+        therapists = [[2,7,4,1,9,5,4,2], [8,2,4,7,2,2,4,2], [4,4,1,1,7, 8, 1,8], [4,1,1,5,8,3,8,3],
+                      [9,8,4,7,2,4,3,8], [4,1,9,9,9,6,2,3], [2,3,2,5,2,7,5,5], [9,2,7,4,5,2,7,4]]
         for x in range(5000):
-            therapist = random.randint(0, 4)
-            weighted_random_1 = 0
-            weighted_random_2 = 0
-            weighted_random_3 = 0
-            weighted_random_4 = 0
-            weighted_random_5 = 0
-            weighted_random_6 = 0
-            weighted_random_7 = 0
-            weighted_random_8 = 0
+            therapist = random.randint(0, 7)
 
-            if therapist == 0:
-                weighted_random_1 = int(get_truncated_normal(2, 1, 0, 10).rvs(1))
-                weighted_random_2 = int(get_truncated_normal(7, 1, 0, 10).rvs(1))
-                weighted_random_3 = int(get_truncated_normal(4, 1, 0, 10).rvs(1))
-                weighted_random_4 = int(get_truncated_normal(1, 1, 0, 10).rvs(1))
-                weighted_random_5 = int(get_truncated_normal(9, 1, 0, 10).rvs(1))
-                weighted_random_6 = int(get_truncated_normal(5, 1, 0, 10).rvs(1))
-                weighted_random_7 = int(get_truncated_normal(4, 1, 0, 10).rvs(1))
-                weighted_random_8 = int(get_truncated_normal(2, 1, 0, 10).rvs(1))
-            if therapist == 1:
-                weighted_random_1 = int(get_truncated_normal(7, 1, 0, 10).rvs(1))
-                weighted_random_2 = int(get_truncated_normal(4, 1, 0, 10).rvs(1))
-                weighted_random_3 = int(get_truncated_normal(2, 1, 0, 10).rvs(1))
-                weighted_random_4 = int(get_truncated_normal(4, 1, 0, 10).rvs(1))
-                weighted_random_5 = int(get_truncated_normal(3, 1, 0, 10).rvs(1))
-                weighted_random_6 = int(get_truncated_normal(8, 1, 0, 10).rvs(1))
-                weighted_random_7 = int(get_truncated_normal(5, 1, 0, 10).rvs(1))
-                weighted_random_8 = int(get_truncated_normal(4, 1, 0, 10).rvs(1))
-
-            if therapist == 2:
-                weighted_random_1 = int(get_truncated_normal(5, 1, 0, 10).rvs(1))
-                weighted_random_2 = int(get_truncated_normal(9, 1, 0, 10).rvs(1))
-                weighted_random_3 = int(get_truncated_normal(4, 1, 0, 10).rvs(1))
-                weighted_random_4 = int(get_truncated_normal(2, 1, 0, 10).rvs(1))
-                weighted_random_5 = int(get_truncated_normal(8, 1, 0, 10).rvs(1))
-                weighted_random_6 = int(get_truncated_normal(1, 1, 0, 10).rvs(1))
-                weighted_random_7 = int(get_truncated_normal(2, 1, 0, 10).rvs(1))
-                weighted_random_8 = int(get_truncated_normal(3, 1, 0, 10).rvs(1))
-
-            if therapist == 3:
-                weighted_random_1 = int(get_truncated_normal(2, 1, 0, 10).rvs(1))
-                weighted_random_2 = int(get_truncated_normal(1, 1, 0, 10).rvs(1))
-                weighted_random_3 = int(get_truncated_normal(4, 1, 0, 10).rvs(1))
-                weighted_random_4 = int(get_truncated_normal(7, 1, 0, 10).rvs(1))
-                weighted_random_5 = int(get_truncated_normal(9, 1, 0, 10).rvs(1))
-                weighted_random_6 = int(get_truncated_normal(1, 1, 0, 10).rvs(1))
-                weighted_random_7 = int(get_truncated_normal(8, 1, 0, 10).rvs(1))
-                weighted_random_8 = int(get_truncated_normal(5, 1, 0, 10).rvs(1))
-            if therapist == 4:
-                weighted_random_1 = int(get_truncated_normal(9, 1, 0, 10).rvs(1))
-                weighted_random_2 = int(get_truncated_normal(2, 1, 0, 10).rvs(1))
-                weighted_random_3 = int(get_truncated_normal(4, 1, 0, 10).rvs(1))
-                weighted_random_4 = int(get_truncated_normal(3, 1, 0, 10).rvs(1))
-                weighted_random_5 = int(get_truncated_normal(7, 1, 0, 10).rvs(1))
-                weighted_random_6 = int(get_truncated_normal(2, 1, 0, 10).rvs(1))
-                weighted_random_7 = int(get_truncated_normal(3, 1, 0, 10).rvs(1))
-                weighted_random_8 = int(get_truncated_normal(6, 1, 0, 10).rvs(1))
+            val = therapists[therapist]
+            weighted_random_1 = int(get_truncated_normal(val[0], 1, 0, 10).rvs(1))
+            weighted_random_2 = int(get_truncated_normal(val[1], 1, 0, 10).rvs(1))
+            weighted_random_3 = int(get_truncated_normal(val[2], 1, 0, 10).rvs(1))
+            weighted_random_4 = int(get_truncated_normal(val[3], 1, 0, 10).rvs(1))
+            weighted_random_5 = int(get_truncated_normal(val[4], 1, 0, 10).rvs(1))
+            weighted_random_6 = int(get_truncated_normal(val[5], 1, 0, 10).rvs(1))
+            weighted_random_7 = int(get_truncated_normal(val[6], 1, 0, 10).rvs(1))
+            weighted_random_8 = int(get_truncated_normal(val[7], 1, 0, 10).rvs(1))
 
             self.cur.execute(
                 "INSERT INTO junction (arvo1, arvo2, arvo3, arvo4, arvo5, arvo6, arvo7, arvo8, terapeutti) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (weighted_random_1, weighted_random_2, weighted_random_3, weighted_random_4, weighted_random_5,
                  weighted_random_6, weighted_random_7, weighted_random_8, therapist))
 
-        print(int(self.Value1.text()))
         self.conn.commit()
 
 
@@ -180,8 +147,8 @@ ml = Machinelearning()
 X, y = ml.split_database(df, "terapeutti")
 data = ml.data_split(X, y, 0.40)
 #ml.find_parameters(data[0], data[1])
-#model = ml.train_model(data[0], data[1])
-#ml.save_model(model)
+model = ml.train_model(data[0], data[1])
+ml.save_model(model)
 new_model = ml.load_model("finalized_model.sav")
 
 ml.predict_model(new_model, data[2], data[3], "Validation")
