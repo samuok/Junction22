@@ -42,8 +42,7 @@ def connect():
     # conn.commit()
 
     print(df)
-
-    # print(q)
+    return df
 
 class Ui(QMainWindow):
     def __init__(self):
@@ -105,4 +104,15 @@ app = QApplication([])
 window = Ui()
 window.show()
 app.exec_()
+
+df = connect()
+print(df.columns)
+ml = Machinelearning()
+X, y = ml.split_database(df, "arvo4")
+data = ml.data_split(X, y, 0.40)
+ml.find_parameters(data[0], data[1])
+model = ml.train_model(data[0], data[1])
+ml.predict_model(model, data[2], data[3], "Validation")
+ml.predict_model(model, data[4], data[5], "Test")
+
 
